@@ -220,51 +220,7 @@ class class_shengbte:
 
 if __name__ == '__main__':
     # basic extraction
-    if False:
-        path_dir = "/ocean/projects/mat220008p/yidaniu/northwestern/"+\
-            "bridge2-yixia/ML-GNN/m3gnet/ZB_and_RC/pos_rc/SBTE-BaO"
-        obj_shengbte = class_shengbte(path_dir = path_dir)
-        print (obj_shengbte.values)
-        #SBTE-LiH/
-        #SBTE-LiH-m3gnet-2nd3rd/
-        #SBTE-LiH-m3gnet-3rd/
-        
-    # extract temperature dependent lattice thermal conductivity
-    if False:
-        path_dir = "/ocean/projects/mat220008p/yidaniu/psu/collaborators/with-zhongzhen/InSiTe/csld-5.5/sbte"
-        obj_shengbte = class_shengbte(path_dir = path_dir)
-        for i in obj_shengbte.values['kappa'].keys():
-            print (str(obj_shengbte.values['kappa'][i][1][0,0])+"   " +
-                   str(obj_shengbte.values['kappa'][i][1][1,1])+"   " +
-                   str(obj_shengbte.values['kappa'][i][1][2,2]))
-        #print (obj_shengbte.values['kappa'])
-
-    # extract total weighted scattering phase space
-    if False:
-        path_dir = "/ocean/projects/mat220008p/yidaniu/psu/psu-projects/multiphonon-scattering/pbte/ifcs_set_1/"
-        list_wp34 = []
-        for i in range(259):#259
-            dir_tmp = "sbte-"+str(i)
-            obj_sbte = class_shengbte(path_dir = path_dir +dir_tmp, is_kappa = False, is_phase = True)
-            wp3_sum = np.sum(obj_sbte.values['phase']['wp3'][0][:,1])
-            wp4_sum =  (np.sum(obj_sbte.values['phase']['wp4'][0][:,1]))
-            list_wp34.append([wp3_sum, wp4_sum])
-        np.savetxt('wp34.dat', np.array(list_wp34))
-
-
-    # extract new calculation
-    if True:
-        path_dir = "/ocean/projects/mat220008p/yidaniu/psu/psu-projects/multiphonon-scattering/pbte/ifcs-set-1/"
-        list_kappa = []
-        for i in range(236):#259                                                                                   
-            dir_tmp = "sbte-"+str(i)
-            obj_sbte = class_shengbte(path_dir = path_dir +dir_tmp, is_kappa = True, is_phase = False)
-            #print (obj_sbte.values['kappa']['300'])
-            kappa_3rd = obj_sbte.values['kappa']['300'][1][0,0]
-            kappa_4th = obj_sbte.values['kappa_4th']['300'][0][0,0]
-            list_kappa.append([kappa_3rd, kappa_4th])
-            print ([kappa_3rd, kappa_4th])
-        np.savetxt('kappa_all.dat', np.array(list_kappa))
+    pass
             
             
     
