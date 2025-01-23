@@ -4,3 +4,4 @@ Scripts for computing the diagonal and off-diagonal contributions to lattice the
 * Install the rivsed phonopy (revised-phonopy.zip) using "pip install -e ." (development mode)
 * Go to folder "unifiedkappa/example" and run "python ../script_kappa_deg.py"
 * Folder "unifiedkappa/example" contains the inputs and outputs typically found in ShengBTE calculations
+* Note that in order to read scattering rates produced by ShengBTE please explicitly specify onlyharmonic=.FALSE. in CONTROL file
