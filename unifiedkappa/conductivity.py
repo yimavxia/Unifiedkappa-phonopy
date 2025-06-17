@@ -54,7 +54,8 @@ class class_kappa:
                           is_sbtetau = True,
                           path_sbtetau = "./",
                           list_taufactor = [2.0],
-                          override_error = True):
+                          override_error = True,
+                          delta_freq = 2):
         try:
             import phonopy
             from phonopy import Phonopy
@@ -93,10 +94,16 @@ class class_kappa:
         kB = 1.380648813000000E-023
         pi = np.pi
         volpc = volpc/1000.0 # angstrom --> nm
-        gvfull = gvfull/10.0 # angstrom/THz --> nm/THz
+        gvfull = gvfull/10.0 # angstrom*THz --> nm*THz == km/s
         freqs = freqs*2*pi   # THz --> 2*Pi*THz
         nband = len(freqs[0])
         freqcf = 0.1 #THz
+
+        max_freq = np.max(freqs)
+        delta_n = math.floor(max_freq/delta_freq)+1
+        print (f"max_freq: {max_freq}")
+        histo_kappa_d = np.zeros((delta_n, delta_n, 3, 3))
+        histo_kappa_od = np.zeros((delta_n, delta_n, 3, 3))
 
         def shift_qpt(qpt_in):
             '''
@@ -154,6 +161,8 @@ class class_kappa:
                                 for kp in range(3):
                                     omega1=freqs[iq,i]
                                     omega2=freqs[iq,j]
+                                    idx_freq1=math.floor(omega1/delta_freq)
+                                    idx_freq2=math.floor(omega2/delta_freq)
                                     if omega1>freqcf and omega2>freqcf:
                                         if False:
                                             if (freqs[iq,i]/2/pi) > 0:
@@ -170,14 +179,28 @@ class class_kappa:
                                         fBE1=1.0/(np.exp(hbar*omega1/kB/temp)-1.0)
                                         fBE2=1.0/(np.exp(hbar*omega2/kB/temp)-1.0)
                                         tmpv=(gvfull[iq,i,j,k]*gvfull[iq,j,i,kp]).real
-                                        kappaband[i,j,k,kp]=kappaband[i,j,k,kp]+(omega1+omega2)/2* \
+                                        kappaband_tmp=(omega1+omega2)/2* \
                                             (fBE1*(fBE1+1)*omega1+fBE2*(fBE2+1)*omega2)*tmpv \
                                             /(4*(omega1-omega2)**2+(Gamma1+Gamma2)**2)*\
                                             (Gamma1+Gamma2)
+                                        kappaband[i,j,k,kp]=kappaband[i,j,k,kp]+kappaband_tmp
+                                        if i==j:
+                                            histo_kappa_d[idx_freq1, idx_freq2]+=kappaband_tmp
+                                        else:
+                                            histo_kappa_od[idx_freq1, idx_freq2]+=kappaband_tmp
                 # convert to thermal conductivity
                 if is_minikappa:
                     print (f"Factor: {factor}"+"-"*10)
-                kappaband=kappaband*1E21*hbar**2/(kB*temp*temp*volpc*nqpt)
+                # convert unit
+                unit_factor = 1E21*hbar**2/(kB*temp*temp*volpc*nqpt)
+                kappaband=kappaband*unit_factor
+                histo_kappa_d=histo_kappa_d*unit_factor
+                histo_kappa_od=histo_kappa_od*unit_factor
+                np.savetxt('array_od_xx.txt', histo_kappa_od[:,:,0,0])
+                np.savetxt('array_d_xx.txt', histo_kappa_d[:,:,0,0])
+                np.savetxt('array_od_yy.txt', histo_kappa_od[:,:,1,1])
+                np.savetxt('array_od_zz.txt', histo_kappa_od[:,:,2,2])
+                # convert unit
                 kappaD  = np.zeros((3,3), dtype=np.complex128, order='C')
                 kappaOD = np.zeros((3,3), dtype=np.complex128, order='C')
                 kappaF  = np.zeros((3,3), dtype=np.complex128, order='C')
