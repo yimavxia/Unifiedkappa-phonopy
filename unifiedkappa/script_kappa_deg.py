@@ -17,5 +17,6 @@ obj_kappa.get_kappa_phonopy(
     is_planckian = False,
     is_sbtetau = True,
     path_sbtetau = "./",
-    list_taufactor = [2.0]
+    list_taufactor = [2.0],
+    delta_freq = 2
 )
