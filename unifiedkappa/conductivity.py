@@ -185,9 +185,9 @@ class class_kappa:
                                             (Gamma1+Gamma2)
                                         kappaband[i,j,k,kp]=kappaband[i,j,k,kp]+kappaband_tmp
                                         if i==j:
-                                            histo_kappa_d[idx_freq1, idx_freq2]+=kappaband_tmp
+                                            histo_kappa_d[idx_freq1, idx_freq2, k, kp]+=kappaband_tmp
                                         else:
-                                            histo_kappa_od[idx_freq1, idx_freq2]+=kappaband_tmp
+                                            histo_kappa_od[idx_freq1, idx_freq2, k, kp]+=kappaband_tmp
                 # convert to thermal conductivity
                 if is_minikappa:
                     print (f"Factor: {factor}"+"-"*10)
